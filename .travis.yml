@@ -1,0 +1,25 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t pierrelalanne/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run pierrelalanne/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t pierrelalanne/multi-client ./client
+  - docker build -t pierrelalanne/multi-nginx ./nginx
+  - docker build -t pierrelalanne/multi-server ./server
+  - docker build -t pierrelalanne/multi-worker ./worker
+
+    # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin  
+
+  # push images to docker hub
+  - docker push pierrelalanne/multi-client
+  - docker push pierrelalanne/multi-nginx
+  - docker push pierrelalanne/multi-server
+  - docker push pierrelalanne/multi-worker
+
