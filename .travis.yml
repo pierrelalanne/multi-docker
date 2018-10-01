@@ -15,7 +15,7 @@ after_success:
   - docker build -t plalanneaf/multi-worker ./worker
 
     # Log in to the docker CLI
-  - docker login -u "$DOCKER_ID" -p "$DOCKER_PASSWORD" 
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin 
 
   # push images to docker hub
   - docker push plalanneaf/multi-client
